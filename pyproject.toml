@@ -1,0 +1,32 @@
+[project]
+name = "medigo-server"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Yuvraj",email = "yuvraj@fynancial.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "uvicorn (>=0.44.0,<0.45.0)",
+    "fastapi (>=0.135.3,<0.136.0)"
+]
+
+[tool.mypy]
+strict = true
+
+[tool.poetry]
+packages = [{include = "medigo_server", from = "src"}]
+
+[tool.poetry.scripts]
+dev = "medigo_server.main:main"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "mypy (>=1.20.1,<2.0.0)",
+    "ruff (>=0.15.10,<0.16.0)"
+]
