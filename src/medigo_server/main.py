@@ -3,6 +3,9 @@ from fastapi import FastAPI
 from medigo_server.schemas import ResponseModel
 from medigo_server.routers import router
 from fastapi.middleware.cors import CORSMiddleware
+from medigo_server.database import Base, engine
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -21,6 +24,7 @@ app.add_middleware(
 @app.get("/health")
 async def root() -> ResponseModel:
     return ResponseModel(success=True, message=f"Healthy")
+
 
 def main() -> None:
     uvicorn.run("medigo_server.main:app", host="0.0.0.0",port=8000,reload=True)

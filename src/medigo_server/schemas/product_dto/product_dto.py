@@ -1,9 +1,9 @@
-from pydantic import BaseModel
-from typing import Optional,List
+from pydantic import BaseModel, Field
+from typing import Optional,List, Annotated
 from medigo_server.common.enums import MedicineType
 
 class Product_Dto(BaseModel):
-    id: str
+    id: Annotated[str | None , Field(default=None)]
     name: str
     generic_name: Optional[str] = None
     brand: str

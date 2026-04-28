@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session, DeclarativeBase
 from typing import Generator
+from medigo_server.config.config import settings
 
-SQLALCHEMY_DATABASE_URL = "DB_URL"
+SQLALCHEMY_DATABASE_URL = settings.DATABASE_URL
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL,echo=True)
 

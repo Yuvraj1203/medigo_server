@@ -5,5 +5,5 @@ class ResponseModel(BaseModel):
     success: Optional[bool] = True
     status: Optional[int] = 200
     result: Optional[Any] = None
-    message: str
+    message: Optional[str] = None
     unAuthorizedRequest: Optional[bool] = False

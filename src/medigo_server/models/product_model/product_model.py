@@ -3,6 +3,7 @@ from medigo_server.common.enums import MedicineType
 from sqlalchemy import Column, String, Boolean, ForeignKey, Enum
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import Mapped, mapped_column
+from uuid import uuid4
 
 medicine_type: Mapped[MedicineType] = mapped_column(
     Enum(MedicineType),
@@ -17,7 +18,7 @@ image_url: Mapped[list[str] | None] = mapped_column(
 class Product_Model(Base):
     __tablename__ = "products"
 
-    id = Column(String, primary_key=True, index=True)
+    id = Column(String, primary_key=True, default=lambda: str(uuid4()), index=True)
     name= Column(String, nullable=False)
     generic_name= Column(String, nullable=True)
     brand = Column(String, nullable=True)
