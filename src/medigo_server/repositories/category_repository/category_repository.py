@@ -1,13 +1,14 @@
 from medigo_server.models import Category_Model
-from medigo_server.schemas import Category_Dto, ResponseModel
+from medigo_server.schemas import CategoryDto, ResponseModel, CategoryUpdateDto
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 import logging 
 from medigo_server.core.decorators import handle_crud_exceptions
+from uuid import UUID
 
 logger = logging.getLogger(__name__) #to log with the file name
 
-def create_category_crud(db:Session,data:Category_Dto) -> ResponseModel:
+def create_category_crud(db:Session,data:CategoryDto) -> ResponseModel:
     crud_name = "create_category_crud"
     try:
         existing = db.query(Category_Model).filter(Category_Model.name == data.name).first()
@@ -19,7 +20,10 @@ def create_category_crud(db:Session,data:Category_Dto) -> ResponseModel:
         db.add(category)
         db.commit()
         db.refresh(category)
-        return ResponseModel(result=Category_Dto.model_validate(category))
+        return ResponseModel(result=CategoryDto.model_validate(category))
+    
+    except ValueError as e:
+        raise e
     
     except IntegrityError as e:
         db.rollback()
@@ -38,5 +42,44 @@ def create_category_crud(db:Session,data:Category_Dto) -> ResponseModel:
     
 @handle_crud_exceptions
 def get_categories_crud(db:Session) -> ResponseModel:
-    categories = db.query(Category_Dto).all()
-    return ResponseModel(result=categories)
+    categories = db.query(Category_Model).all()
+    return ResponseModel(result=[CategoryDto.model_validate(category) for category in categories])
+
+@handle_crud_exceptions
+def get_category_crud(db: Session, id:str) -> ResponseModel:
+    category = db.query(Category_Model).filter(Category_Model.id == UUID(id)).first()
+
+    if not category:
+        raise ValueError("Category not found")
+    
+    return ResponseModel(result=CategoryDto.model_validate(category))
+
+@handle_crud_exceptions
+def update_category_crud(db:Session, id:str, request:CategoryUpdateDto) -> ResponseModel:
+    category = db.query(Category_Model).filter(Category_Model.id == UUID(id)).first()
+
+    if not category:
+        raise ValueError("Category not found")
+    
+    data = request.model_dump(exclude_unset=True)
+    
+    if not data:
+        raise ValueError("No fields provided for update")
+
+    for key, value in data.items():
+        setattr(category, key, value)
+
+    db.commit()
+    db.refresh(category)
+    return ResponseModel(result=CategoryUpdateDto.model_validate(category))
+
+@handle_crud_exceptions
+def delete_category_crud(db:Session, id: str) -> ResponseModel:
+    category = db.query(Category_Model).filter(Category_Model.id == UUID(id)).first()
+
+    if not category:
+        raise ValueError("Category not found")
+    
+    db.delete(category)
+    db.commit()
+    return ResponseModel(result=f"Category with id {id} deleted successfully")

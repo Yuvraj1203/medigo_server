@@ -1,9 +1,10 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional,List, Annotated
 from medigo_server.common.enums import MedicineType
+from uuid import UUID
 
-class Product_Dto(BaseModel):
-    id: Annotated[str | None , Field(default=None)]
+class ProductDto(BaseModel):
+    id: Annotated[UUID | None , Field(default=None)]
     name: str
     generic_name: Optional[str] = None
     brand: str
@@ -14,3 +15,5 @@ class Product_Dto(BaseModel):
     medicine_type: MedicineType
     image_url: Optional[List[str]] = None
     is_active: Optional[bool] = True
+
+    model_config = ConfigDict(from_attributes=True)  

@@ -10,9 +10,9 @@ class Product_Model(Base):
     __tablename__ = "products"
 
     id:Mapped[UUID] = mapped_column(PG_UUID(as_uuid=True),primary_key=True, default=uuid4)
-    name= mapped_column(nullable=False)
-    generic_name= mapped_column(nullable=True)
-    brand = mapped_column(nullable=True)
+    name:Mapped[str] = mapped_column(nullable=False)
+    generic_name:Mapped[str] = mapped_column(nullable=True)
+    brand:Mapped[str]  = mapped_column(nullable=True)
     category_id: Mapped[str] = mapped_column(ForeignKey("categories.id"), nullable=False)
     requires_prescription: Mapped[bool] = mapped_column(default=True)
     description: Mapped[str] = mapped_column( nullable=True)

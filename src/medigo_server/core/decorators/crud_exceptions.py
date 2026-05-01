@@ -16,6 +16,9 @@ def handle_crud_exceptions(func: Callable[..., T]) -> Callable[..., T]:
         try:
             return func(*args,**kwargs)
         
+        except ValueError as e:  
+            raise e
+        
         except IntegrityError as e:
             db.rollback()
             logger.error(f"{func.__name__} IntegrityError: {e}")

@@ -8,5 +8,5 @@ router_v1 = APIRouter(
     prefix="/v1"
 )
 
-router_v1.include_router(product_router)
 router_v1.include_router(category_router)
+router_v1.include_router(product_router)
