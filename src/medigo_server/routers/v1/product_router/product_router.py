@@ -1,10 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
 from medigo_server.schemas import ResponseModel, ProductDto
 from medigo_server.utils import get_current_user
 from medigo_server.database import get_db
 from sqlalchemy.orm import Session
 from medigo_server.service import add_product_service, get_products_service, delete_product_service
-
 
 product_router = APIRouter(
     prefix="/products",
@@ -13,9 +12,9 @@ product_router = APIRouter(
 )
 
 @product_router.post("",response_model=ResponseModel,dependencies=[Depends(get_current_user)])
-def create_product(request_model:ProductDto, db:Session = Depends(get_db)) -> ResponseModel:
+async def create_product(request_model:ProductDto, files: list[UploadFile] = File(...), db:Session = Depends(get_db)) -> ResponseModel:
     try:
-        return add_product_service(request_model, db)
+        return await add_product_service(request_model, files, db)
     except Exception as e:
         raise HTTPException(
             status_code=400,

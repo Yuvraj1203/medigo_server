@@ -8,7 +8,7 @@ class ProductDto(BaseModel):
     name: str
     generic_name: Optional[str] = None
     brand: str
-    category_id: str #foreign key
+    category_id: UUID #foreign key
     requires_prescription: Optional[bool] = True
     description: Optional[str] = None
     manufacturer: Optional[str] = None
